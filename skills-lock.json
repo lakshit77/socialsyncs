@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "rsc-data-optimizer": {
+      "source": "julianromli/ai-skills",
+      "sourceType": "github",
+      "computedHash": "964fc12c2d2b949fce222cddd2f67ea9139f98e4807874d36ff8f4f9c5d422a4"
+    }
+  }
+}

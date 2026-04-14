@@ -1,0 +1,1388 @@
+{
+    "nodes": [
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "=https://graph.facebook.com/v22.0/{{ $json.node }}/media",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendQuery": true,
+                "queryParameters": {
+                    "parameters": [
+                        {
+                            "name": "image_url",
+                            "value": "={{ $json.image_url }}"
+                        },
+                        {
+                            "name": "caption",
+                            "value": "={{ $json.caption }}"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                1040,
+                -64
+            ],
+            "id": "812039b5-c9b4-49e5-afc0-18c8cb7a1e8f",
+            "name": "Container HTTP Image",
+            "credentials": {
+                "httpHeaderAuth": {
+                    "id": "kLkJeU62RTWDWYIU",
+                    "name": "Pankaj Fal AI Key"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "=https://graph.facebook.com/v22.0/{{ $json.node }}/media",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendQuery": true,
+                "queryParameters": {
+                    "parameters": [
+                        {
+                            "name": "media_type",
+                            "value": "=REELS"
+                        },
+                        {
+                            "name": "video_url",
+                            "value": "={{ $json.video_url }}"
+                        },
+                        {
+                            "name": "caption",
+                            "value": "={{ $json.caption }}"
+                        },
+                        {
+                            "name": "cover_url",
+                            "value": "={{ $json.cover_image }}"
+                        },
+                        {
+                            "name": "audio_name",
+                            "value": "Monody (feat. Laura Brehm)"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                1040,
+                1200
+            ],
+            "id": "08b31bd6-2bb5-4aa6-ab65-65732830fbfe",
+            "name": "Container HTTP Reels",
+            "credentials": {
+                "httpHeaderAuth": {
+                    "id": "kLkJeU62RTWDWYIU",
+                    "name": "Pankaj Fal AI Key"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "httpRequestMethod": "POST",
+                "graphApiVersion": "v22.0",
+                "node": "={{ $json.node }}",
+                "edge": "media",
+                "options": {
+                    "queryParameters": {
+                        "parameter": [
+                            {
+                                "name": "caption",
+                                "value": "={{ $json.caption }}"
+                            },
+                            {
+                                "name": "image_url",
+                                "value": "={{ $json.image_url }}"
+                            }
+                        ]
+                    }
+                }
+            },
+            "type": "n8n-nodes-base.facebookGraphApi",
+            "typeVersion": 1,
+            "position": [
+                1040,
+                144
+            ],
+            "id": "0af05ffb-c507-4b0f-afd4-0e6805692067",
+            "name": "Container FB Image",
+            "credentials": {
+                "facebookGraphApi": {
+                    "id": "DJ3CYWtb5WydRoe9",
+                    "name": "Facebook Graph account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "httpRequestMethod": "POST",
+                "graphApiVersion": "v22.0",
+                "node": "={{ $json.node }}",
+                "edge": "media",
+                "options": {
+                    "queryParameters": {
+                        "parameter": [
+                            {
+                                "name": "caption",
+                                "value": "={{ $json.caption }}"
+                            },
+                            {
+                                "name": "image_url",
+                                "value": "={{ $json.image_url }}"
+                            },
+                            {
+                                "name": "media_type",
+                                "value": "STORIES"
+                            }
+                        ]
+                    }
+                }
+            },
+            "type": "n8n-nodes-base.facebookGraphApi",
+            "typeVersion": 1,
+            "position": [
+                1040,
+                544
+            ],
+            "id": "2585f555-e4a9-446e-bc9f-8b1185d91af6",
+            "name": "Container FB Story Image",
+            "credentials": {
+                "facebookGraphApi": {
+                    "id": "DJ3CYWtb5WydRoe9",
+                    "name": "Facebook Graph account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "=https://graph.facebook.com/v22.0/{{ $json.node }}/media",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendQuery": true,
+                "queryParameters": {
+                    "parameters": [
+                        {
+                            "name": "media_type",
+                            "value": "=STORIES"
+                        },
+                        {
+                            "name": "image_url",
+                            "value": "={{ $json.image_url }}"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                1040,
+                384
+            ],
+            "id": "7954d5e3-f6f9-4a98-87a7-98ba6be43a66",
+            "name": "Container HTTP Story Image",
+            "credentials": {
+                "httpHeaderAuth": {
+                    "id": "kLkJeU62RTWDWYIU",
+                    "name": "Pankaj Fal AI Key"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "httpRequestMethod": "POST",
+                "graphApiVersion": "v22.0",
+                "node": "=17841456545908024",
+                "edge": "media",
+                "options": {
+                    "queryParameters": {
+                        "parameter": [
+                            {
+                                "name": "caption",
+                                "value": "={{ $json.caption }}"
+                            },
+                            {
+                                "name": "video_url",
+                                "value": "={{ $json.video_url }}"
+                            },
+                            {
+                                "name": "media_type",
+                                "value": "REELS"
+                            },
+                            {
+                                "name": "cover_url",
+                                "value": "={{ $json.cover_image }}"
+                            }
+                        ]
+                    }
+                }
+            },
+            "type": "n8n-nodes-base.facebookGraphApi",
+            "typeVersion": 1,
+            "position": [
+                1040,
+                1344
+            ],
+            "id": "22943c4b-bd71-4d83-ab3d-44785966db8b",
+            "name": "Container FB Reels",
+            "credentials": {
+                "facebookGraphApi": {
+                    "id": "DJ3CYWtb5WydRoe9",
+                    "name": "Facebook Graph account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "=https://graph.facebook.com/v22.0/{{ $json.node }}/media",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendQuery": true,
+                "queryParameters": {
+                    "parameters": [
+                        {
+                            "name": "media_type",
+                            "value": "=STORIES"
+                        },
+                        {
+                            "name": "video_url",
+                            "value": "={{ $json.video_url }}"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                1040,
+                784
+            ],
+            "id": "7b683b95-0f11-4148-a4c7-51d56a2fb41c",
+            "name": "Container HTTP Story Video",
+            "credentials": {
+                "httpHeaderAuth": {
+                    "id": "kLkJeU62RTWDWYIU",
+                    "name": "Pankaj Fal AI Key"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "httpRequestMethod": "POST",
+                "graphApiVersion": "v22.0",
+                "node": "={{ $json.node }}",
+                "edge": "media",
+                "options": {
+                    "queryParameters": {
+                        "parameter": [
+                            {
+                                "name": "video_url",
+                                "value": "={{ $json.video_url }}"
+                            },
+                            {
+                                "name": "media_type",
+                                "value": "STORIES"
+                            }
+                        ]
+                    }
+                }
+            },
+            "type": "n8n-nodes-base.facebookGraphApi",
+            "typeVersion": 1,
+            "position": [
+                1040,
+                944
+            ],
+            "id": "30b9b2fb-4cd6-4a41-a04b-027e51c202bf",
+            "name": "Container FB Story Video",
+            "credentials": {
+                "facebookGraphApi": {
+                    "id": "DJ3CYWtb5WydRoe9",
+                    "name": "Facebook Graph account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "=https://graph.facebook.com/v22.0/{{ $json.node }}/media",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendQuery": true,
+                "queryParameters": {
+                    "parameters": [
+                        {
+                            "name": "image_url",
+                            "value": "={{ $json.image_url }}"
+                        },
+                        {
+                            "name": "caption",
+                            "value": "={{ $json.caption }}"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                608,
+                1584
+            ],
+            "id": "ca27d03e-7d9b-419a-a119-040b4c92743d",
+            "name": "Container Carousel Image 1",
+            "credentials": {
+                "httpHeaderAuth": {
+                    "id": "kLkJeU62RTWDWYIU",
+                    "name": "Pankaj Fal AI Key"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "=https://graph.facebook.com/v22.0/{{ $('🔀 Smart Content Router').item.json.node }}/media",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendQuery": true,
+                "queryParameters": {
+                    "parameters": [
+                        {
+                            "name": "image_url",
+                            "value": "=https://4.img-dpreview.com/files/p/TC190x190S190x190~sample_galleries/0890568360/4504013564.jpg"
+                        },
+                        {
+                            "name": "caption",
+                            "value": "={{ $('🔀 Smart Content Router').item.json.caption }}"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                832,
+                1584
+            ],
+            "id": "0cac5cf5-ce8e-4fb5-84a7-23f456b442f1",
+            "name": "Container Carousel Image 2",
+            "credentials": {
+                "httpHeaderAuth": {
+                    "id": "kLkJeU62RTWDWYIU",
+                    "name": "Pankaj Fal AI Key"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "=https://graph.facebook.com/v22.0/{{ $('🔀 Smart Content Router').item.json.node }}/media",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendQuery": true,
+                "queryParameters": {
+                    "parameters": [
+                        {
+                            "name": "children",
+                            "value": "={{ $('Container Carousel Image 1').item.json.id }}, {{ $json.id }}"
+                        },
+                        {
+                            "name": "caption",
+                            "value": "={{ $('🔀 Smart Content Router').item.json.caption }}"
+                        },
+                        {
+                            "name": "media_type",
+                            "value": "CAROUSEL"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                1040,
+                1584
+            ],
+            "id": "a51be962-984e-4ca6-9255-b7d490856227",
+            "name": "Container HTTP Carousel",
+            "credentials": {
+                "httpHeaderAuth": {
+                    "id": "kLkJeU62RTWDWYIU",
+                    "name": "Pankaj Fal AI Key"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "content": "## 📸 Image Post Creation",
+                "height": 420,
+                "width": 400
+            },
+            "type": "n8n-nodes-base.stickyNote",
+            "typeVersion": 1,
+            "position": [
+                912,
+                -128
+            ],
+            "id": "cdbcae6a-f763-4652-baf3-3f7e3b9d073c",
+            "name": "Sticky Note"
+        },
+        {
+            "parameters": {
+                "content": "## 📱 Story Image Upload",
+                "height": 380,
+                "width": 400
+            },
+            "type": "n8n-nodes-base.stickyNote",
+            "typeVersion": 1,
+            "position": [
+                912,
+                320
+            ],
+            "id": "224468b8-2ace-4728-bc70-1dc662644ae3",
+            "name": "Sticky Note1"
+        },
+        {
+            "parameters": {
+                "content": "## 🎬 Story Video Upload",
+                "height": 380,
+                "width": 400
+            },
+            "type": "n8n-nodes-base.stickyNote",
+            "typeVersion": 1,
+            "position": [
+                912,
+                720
+            ],
+            "id": "a9146510-ed0d-4fb0-817a-16f428e3e881",
+            "name": "Sticky Note2"
+        },
+        {
+            "parameters": {
+                "content": "## 🎵 Instagram Reels Upload",
+                "height": 380,
+                "width": 400
+            },
+            "type": "n8n-nodes-base.stickyNote",
+            "typeVersion": 1,
+            "position": [
+                912,
+                1120
+            ],
+            "id": "12ebc708-8630-4d08-9d89-756486a9949e",
+            "name": "Sticky Note3"
+        },
+        {
+            "parameters": {
+                "content": "## 🖼️ Carousel Post (Multiple Images)",
+                "height": 220,
+                "width": 860
+            },
+            "type": "n8n-nodes-base.stickyNote",
+            "typeVersion": 1,
+            "position": [
+                448,
+                1520
+            ],
+            "id": "ff7399b8-9453-4464-8b01-fd4e227d1639",
+            "name": "Sticky Note4"
+        },
+        {
+            "parameters": {
+                "content": "## Variable and Routing Setup",
+                "height": 640,
+                "width": 840,
+                "color": 3
+            },
+            "type": "n8n-nodes-base.stickyNote",
+            "typeVersion": 1,
+            "position": [
+                -128,
+                464
+            ],
+            "id": "c602cf1b-6e93-4c86-94b1-8dc78e94630c",
+            "name": "Sticky Note5"
+        },
+        {
+            "parameters": {
+                "content": "## 🔄 Container Processing Pipeline\n1. **Create Container** → After Getting Container ID\n2. **Wait & Poll** → Check if container processing is complete  \n3. **Status Check** → Verify FINISHED status before publishing\n4. **Auto-Retry** → If not ready, wait and check again",
+                "height": 540,
+                "width": 1140,
+                "color": 6
+            },
+            "type": "n8n-nodes-base.stickyNote",
+            "typeVersion": 1,
+            "position": [
+                1568,
+                544
+            ],
+            "id": "fb472319-3fe9-469a-b379-8b874d0899a6",
+            "name": "Sticky Note6"
+        },
+        {
+            "parameters": {
+                "content": "## 📤 Smart Publishing System\nRoute automatically selected based on post_type prefix:\n- http_* → Uses HTTP Request nodes\n- fb_* → Uses Facebook Graph API nodes",
+                "height": 540,
+                "width": 580,
+                "color": 4
+            },
+            "type": "n8n-nodes-base.stickyNote",
+            "typeVersion": 1,
+            "position": [
+                2752,
+                544
+            ],
+            "id": "aa8af56a-d509-4ba8-b3bf-d56b13d61cf1",
+            "name": "Sticky Note7"
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict",
+                        "version": 2
+                    },
+                    "conditions": [
+                        {
+                            "id": "682def4c-2cda-4417-9329-682a8a60feed",
+                            "leftValue": "={{ $json.status_code }}",
+                            "rightValue": "FINISHED",
+                            "operator": {
+                                "type": "string",
+                                "operation": "equals",
+                                "name": "filter.operator.equals"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2.2,
+            "position": [
+                2304,
+                656
+            ],
+            "id": "cfe8c227-3999-409a-9b54-40486a86126d",
+            "name": "✅ Is Container Ready?"
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict",
+                        "version": 2
+                    },
+                    "conditions": [
+                        {
+                            "id": "da6bcb63-632a-443a-b5b3-a8b6e1c62871",
+                            "leftValue": "={{ $('🔀 Smart Content Router').item.json.post_type.split(\"_\")[0] }}",
+                            "rightValue": "http",
+                            "operator": {
+                                "type": "string",
+                                "operation": "equals",
+                                "name": "filter.operator.equals"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2.2,
+            "position": [
+                2800,
+                736
+            ],
+            "id": "505c4063-600f-4756-87a1-9793cea713af",
+            "name": "🔀 HTTP vs FB API Router"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "=https://graph.facebook.com/v22.0/{{ $('🔀 Smart Content Router').item.json.node }}/media_publish",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendQuery": true,
+                "queryParameters": {
+                    "parameters": [
+                        {
+                            "name": "creation_id",
+                            "value": "={{ $json.id }}"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                3024,
+                640
+            ],
+            "id": "5e7c5a9c-ab15-4801-a7fd-12ceb95c71fa",
+            "name": "📤 Publish via HTTP API",
+            "credentials": {
+                "httpHeaderAuth": {
+                    "id": "kLkJeU62RTWDWYIU",
+                    "name": "Pankaj Fal AI Key"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "httpRequestMethod": "POST",
+                "graphApiVersion": "v22.0",
+                "node": "={{ $('🔀 Smart Content Router').item.json.node }}",
+                "edge": "media_publish",
+                "options": {
+                    "queryParameters": {
+                        "parameter": [
+                            {
+                                "name": "creation_id",
+                                "value": "={{ $json.id }}"
+                            }
+                        ]
+                    }
+                }
+            },
+            "type": "n8n-nodes-base.facebookGraphApi",
+            "typeVersion": 1,
+            "position": [
+                3024,
+                848
+            ],
+            "id": "49dce2df-56cf-432a-85f2-7bb592c55e56",
+            "name": "📤 Publish via Facebook SDK",
+            "credentials": {
+                "facebookGraphApi": {
+                    "id": "DJ3CYWtb5WydRoe9",
+                    "name": "Facebook Graph account"
+                }
+            }
+        },
+        {
+            "parameters": {},
+            "type": "n8n-nodes-base.wait",
+            "typeVersion": 1.1,
+            "position": [
+                1824,
+                736
+            ],
+            "id": "d9163779-06f2-48f7-b403-c054f3b33c03",
+            "name": "⏰ Initial Processing Wait",
+            "webhookId": "443f84eb-1e9d-4c77-9a9a-c70290333dca"
+        },
+        {
+            "parameters": {},
+            "type": "n8n-nodes-base.wait",
+            "typeVersion": 1.1,
+            "position": [
+                2528,
+                848
+            ],
+            "id": "6d012add-4ea7-4a0b-8b78-9d3515af3201",
+            "name": "⏰ Retry Wait Loop",
+            "webhookId": "e9ac0c1d-b415-4160-a6b1-908d2310cb23"
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "37f96da8-a8b6-417b-b5cf-7a4df5b4610c",
+                            "name": "container_id",
+                            "value": "={{ $json.id }}",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                1600,
+                736
+            ],
+            "id": "f415841a-37d6-4ddb-980b-7c4e11ab6cc6",
+            "name": "🔍 Check Processing Status"
+        },
+        {
+            "parameters": {
+                "rules": {
+                    "values": [
+                        {
+                            "conditions": {
+                                "options": {
+                                    "caseSensitive": true,
+                                    "leftValue": "",
+                                    "typeValidation": "strict",
+                                    "version": 2
+                                },
+                                "conditions": [
+                                    {
+                                        "leftValue": "={{ $json.post_type }}",
+                                        "rightValue": "http_image",
+                                        "operator": {
+                                            "type": "string",
+                                            "operation": "equals"
+                                        },
+                                        "id": "ab388a77-1660-4a64-ba58-bc405444dbd5"
+                                    }
+                                ],
+                                "combinator": "and"
+                            },
+                            "renameOutput": true,
+                            "outputKey": "HTTP - Image"
+                        },
+                        {
+                            "conditions": {
+                                "options": {
+                                    "caseSensitive": true,
+                                    "leftValue": "",
+                                    "typeValidation": "strict",
+                                    "version": 2
+                                },
+                                "conditions": [
+                                    {
+                                        "id": "be8816f5-ae68-48c3-869e-bc67078298d8",
+                                        "leftValue": "={{ $json.post_type }}",
+                                        "rightValue": "fb_image",
+                                        "operator": {
+                                            "type": "string",
+                                            "operation": "equals",
+                                            "name": "filter.operator.equals"
+                                        }
+                                    }
+                                ],
+                                "combinator": "and"
+                            },
+                            "renameOutput": true,
+                            "outputKey": "FB - Image"
+                        },
+                        {
+                            "conditions": {
+                                "options": {
+                                    "caseSensitive": true,
+                                    "leftValue": "",
+                                    "typeValidation": "strict",
+                                    "version": 2
+                                },
+                                "conditions": [
+                                    {
+                                        "id": "663bacc8-ceeb-4f81-b058-c379eaf6e717",
+                                        "leftValue": "={{ $json.post_type }}",
+                                        "rightValue": "http_story_image",
+                                        "operator": {
+                                            "type": "string",
+                                            "operation": "equals",
+                                            "name": "filter.operator.equals"
+                                        }
+                                    }
+                                ],
+                                "combinator": "and"
+                            },
+                            "renameOutput": true,
+                            "outputKey": "HTTP - Story Img"
+                        },
+                        {
+                            "conditions": {
+                                "options": {
+                                    "caseSensitive": true,
+                                    "leftValue": "",
+                                    "typeValidation": "strict",
+                                    "version": 2
+                                },
+                                "conditions": [
+                                    {
+                                        "id": "99441a51-906e-469a-b98e-64aa43c996ba",
+                                        "leftValue": "={{ $json.post_type }}",
+                                        "rightValue": "fb_story_image",
+                                        "operator": {
+                                            "type": "string",
+                                            "operation": "equals",
+                                            "name": "filter.operator.equals"
+                                        }
+                                    }
+                                ],
+                                "combinator": "and"
+                            },
+                            "renameOutput": true,
+                            "outputKey": "FB - Story Image"
+                        },
+                        {
+                            "conditions": {
+                                "options": {
+                                    "caseSensitive": true,
+                                    "leftValue": "",
+                                    "typeValidation": "strict",
+                                    "version": 2
+                                },
+                                "conditions": [
+                                    {
+                                        "id": "29cfc5f8-e1ae-4c10-8961-2356d7c13195",
+                                        "leftValue": "={{ $json.post_type }}",
+                                        "rightValue": "http_story_video",
+                                        "operator": {
+                                            "type": "string",
+                                            "operation": "equals",
+                                            "name": "filter.operator.equals"
+                                        }
+                                    }
+                                ],
+                                "combinator": "and"
+                            },
+                            "renameOutput": true,
+                            "outputKey": "HTTP = Story Video"
+                        },
+                        {
+                            "conditions": {
+                                "options": {
+                                    "caseSensitive": true,
+                                    "leftValue": "",
+                                    "typeValidation": "strict",
+                                    "version": 2
+                                },
+                                "conditions": [
+                                    {
+                                        "id": "578f5df3-23ef-4ef3-9a48-7528c826ea46",
+                                        "leftValue": "={{ $json.post_type }}",
+                                        "rightValue": "fb_story_video",
+                                        "operator": {
+                                            "type": "string",
+                                            "operation": "equals",
+                                            "name": "filter.operator.equals"
+                                        }
+                                    }
+                                ],
+                                "combinator": "and"
+                            },
+                            "renameOutput": true,
+                            "outputKey": "FB - Story Video"
+                        },
+                        {
+                            "conditions": {
+                                "options": {
+                                    "caseSensitive": true,
+                                    "leftValue": "",
+                                    "typeValidation": "strict",
+                                    "version": 2
+                                },
+                                "conditions": [
+                                    {
+                                        "id": "25e31619-4116-46e0-bfcb-a8d8a030fa68",
+                                        "leftValue": "={{ $json.post_type }}",
+                                        "rightValue": "http_reel",
+                                        "operator": {
+                                            "type": "string",
+                                            "operation": "equals",
+                                            "name": "filter.operator.equals"
+                                        }
+                                    }
+                                ],
+                                "combinator": "and"
+                            },
+                            "renameOutput": true,
+                            "outputKey": "HTTP - Reels"
+                        },
+                        {
+                            "conditions": {
+                                "options": {
+                                    "caseSensitive": true,
+                                    "leftValue": "",
+                                    "typeValidation": "strict",
+                                    "version": 2
+                                },
+                                "conditions": [
+                                    {
+                                        "id": "cf34e931-f798-4c70-af29-9aec7aab8f6c",
+                                        "leftValue": "={{ $json.post_type }}",
+                                        "rightValue": "fb_reel",
+                                        "operator": {
+                                            "type": "string",
+                                            "operation": "equals",
+                                            "name": "filter.operator.equals"
+                                        }
+                                    }
+                                ],
+                                "combinator": "and"
+                            },
+                            "renameOutput": true,
+                            "outputKey": "FB - Reels"
+                        },
+                        {
+                            "conditions": {
+                                "options": {
+                                    "caseSensitive": true,
+                                    "leftValue": "",
+                                    "typeValidation": "strict",
+                                    "version": 2
+                                },
+                                "conditions": [
+                                    {
+                                        "id": "02944863-db4b-445f-9c03-382abd9525b9",
+                                        "leftValue": "={{ $json.post_type }}",
+                                        "rightValue": "http_carousel",
+                                        "operator": {
+                                            "type": "string",
+                                            "operation": "equals",
+                                            "name": "filter.operator.equals"
+                                        }
+                                    }
+                                ],
+                                "combinator": "and"
+                            },
+                            "renameOutput": true,
+                            "outputKey": "HTTP - Carousel"
+                        },
+                        {
+                            "conditions": {
+                                "options": {
+                                    "caseSensitive": true,
+                                    "leftValue": "",
+                                    "typeValidation": "strict",
+                                    "version": 2
+                                },
+                                "conditions": [
+                                    {
+                                        "id": "0a17aaa0-8520-442f-9c3f-b4112339a08c",
+                                        "leftValue": "={{ $json.post_type }}",
+                                        "rightValue": "fb_carousel",
+                                        "operator": {
+                                            "type": "string",
+                                            "operation": "equals",
+                                            "name": "filter.operator.equals"
+                                        }
+                                    }
+                                ],
+                                "combinator": "and"
+                            },
+                            "renameOutput": true,
+                            "outputKey": "FB - Carousel"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.switch",
+            "typeVersion": 3.2,
+            "position": [
+                384,
+                608
+            ],
+            "id": "08f2996f-b273-4d9c-b3d5-68ffe2ebe5cf",
+            "name": "🔀 Smart Content Router"
+        },
+        {
+            "parameters": {},
+            "type": "n8n-nodes-base.manualTrigger",
+            "typeVersion": 1,
+            "position": [
+                -64,
+                736
+            ],
+            "id": "5e2d1594-6e66-4f2f-a297-23f98eeeaace",
+            "name": "🚀 Manual Trigger - Start Workflow"
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "217b69e3-98ec-49a2-8fde-372dd1bc1848",
+                            "name": "node",
+                            "value": "17841456545908024",
+                            "type": "string"
+                        },
+                        {
+                            "id": "2caebe7c-a2d3-428e-b129-fcfbe66854e5",
+                            "name": "post_type",
+                            "value": "http_reel",
+                            "type": "string"
+                        },
+                        {
+                            "id": "a17a5c94-d9ae-44f8-9d56-fb55d17efe5a",
+                            "name": "image_url",
+                            "value": "https://media.licdn.com/dms/image/v2/D4D03AQHf-K7ergkUwQ/profile-displayphoto-shrink_800_800/B4DZbdtDouHQAg-/0/1747476298728?e=1753920000&v=beta&t=Js1KDjpDYOgzYW4YlhwT1_ZmbggoSIxjcq3IA0rRJs0",
+                            "type": "string"
+                        },
+                        {
+                            "id": "6e2c9c54-ce2c-4ea5-8bb2-ae2ae4712427",
+                            "name": "caption",
+                            "value": "Automated Post",
+                            "type": "string"
+                        },
+                        {
+                            "id": "32aa1561-458c-4f64-a854-eab65f9ad1dd",
+                            "name": "video_url",
+                            "value": "https://videos.pexels.com/video-files/4434242/4434242-sd_360_640_24fps.mp4",
+                            "type": "string"
+                        },
+                        {
+                            "id": "c6485101-488b-43db-8708-1a1136292956",
+                            "name": "cover_image",
+                            "value": "https://cdn.pixabay.com/photo/2023/11/07/22/59/building-8373618_1280.jpg",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                160,
+                736
+            ],
+            "id": "7324d9e6-3087-4069-8822-641c1aaf7fcf",
+            "name": "⚙️ Configure Post Settings"
+        },
+        {
+            "parameters": {
+                "url": "=https://graph.facebook.com/v22.0/{{ $('🔍 Check Processing Status').item.json.container_id }}",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendQuery": true,
+                "queryParameters": {
+                    "parameters": [
+                        {
+                            "name": "fields",
+                            "value": "status_code"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                2080,
+                736
+            ],
+            "id": "e3ab546e-55cc-4e1a-af53-751af1b89940",
+            "name": "🔍 Check Processing Status1",
+            "credentials": {
+                "httpHeaderAuth": {
+                    "id": "kLkJeU62RTWDWYIU",
+                    "name": "Pankaj Fal AI Key"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "Container HTTP Image": {
+            "main": [
+                [
+                    {
+                        "node": "🔍 Check Processing Status",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Container HTTP Reels": {
+            "main": [
+                [
+                    {
+                        "node": "🔍 Check Processing Status",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Container FB Image": {
+            "main": [
+                [
+                    {
+                        "node": "🔍 Check Processing Status",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Container FB Story Image": {
+            "main": [
+                [
+                    {
+                        "node": "🔍 Check Processing Status",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Container HTTP Story Image": {
+            "main": [
+                [
+                    {
+                        "node": "🔍 Check Processing Status",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Container FB Reels": {
+            "main": [
+                [
+                    {
+                        "node": "🔍 Check Processing Status",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Container HTTP Story Video": {
+            "main": [
+                [
+                    {
+                        "node": "🔍 Check Processing Status",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Container FB Story Video": {
+            "main": [
+                [
+                    {
+                        "node": "🔍 Check Processing Status",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Container Carousel Image 1": {
+            "main": [
+                [
+                    {
+                        "node": "Container Carousel Image 2",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Container Carousel Image 2": {
+            "main": [
+                [
+                    {
+                        "node": "Container HTTP Carousel",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Container HTTP Carousel": {
+            "main": [
+                [
+                    {
+                        "node": "🔍 Check Processing Status",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "✅ Is Container Ready?": {
+            "main": [
+                [
+                    {
+                        "node": "🔀 HTTP vs FB API Router",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "⏰ Retry Wait Loop",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "🔀 HTTP vs FB API Router": {
+            "main": [
+                [
+                    {
+                        "node": "📤 Publish via HTTP API",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "📤 Publish via Facebook SDK",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "⏰ Initial Processing Wait": {
+            "main": [
+                [
+                    {
+                        "node": "🔍 Check Processing Status1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "⏰ Retry Wait Loop": {
+            "main": [
+                [
+                    {
+                        "node": "🔍 Check Processing Status1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "🔍 Check Processing Status": {
+            "main": [
+                [
+                    {
+                        "node": "⏰ Initial Processing Wait",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "🔀 Smart Content Router": {
+            "main": [
+                [
+                    {
+                        "node": "Container HTTP Image",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Container FB Image",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Container HTTP Story Image",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Container FB Story Image",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Container HTTP Story Video",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Container FB Story Video",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Container HTTP Reels",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Container FB Reels",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Container Carousel Image 1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "🚀 Manual Trigger - Start Workflow": {
+            "main": [
+                [
+                    {
+                        "node": "⚙️ Configure Post Settings",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "⚙️ Configure Post Settings": {
+            "main": [
+                [
+                    {
+                        "node": "🔀 Smart Content Router",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "🔍 Check Processing Status1": {
+            "main": [
+                [
+                    {
+                        "node": "✅ Is Container Ready?",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "pinData": {},
+    "meta": {
+        "templateCredsSetupCompleted": true,
+        "instanceId": "d789f98abc61e86dff687f330128f36b18e064e2b032acf62c2a72dbb26457d3"
+    }
+}

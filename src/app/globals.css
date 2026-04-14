@@ -1,26 +1,89 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Brand Colors */
+  --color-blue: #2B7DE9;
+  --color-dark-blue: #0B3D8C;
+  --color-medium-blue: #4A9AF5;
+  --color-teal: #14B8A6;
+  --color-deep-navy: #0B1120;
+  --color-light-grey: #F3F4F6;
+  --color-orange: #F59E0B;
+  --color-charcoal: #111827;
+
+  /* Semantic Colors */
+  --color-primary: #2B7DE9;
+  --color-primary-hover: #0B3D8C;
+  --color-primary-muted: #4A9AF5;
+  --background: #FFFFFF;
+  --surface: #F3F4F6;
+  --surface-elevated: #FFFFFF;
+  --foreground: #111827;
+  --text-muted: #6B7280;
+  --border: #E5E7EB;
+  --success: #14B8A6;
+  --warning: #F59E0B;
+  --error: #EF4444;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-primary: var(--color-primary);
+  --color-primary-hover: var(--color-primary-hover);
+  --color-primary-muted: var(--color-primary-muted);
+  --color-text-muted: var(--text-muted);
+  --color-border: var(--border);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+  --color-teal: var(--color-teal);
+  --color-deep-navy: var(--color-deep-navy);
+  --color-orange: var(--color-orange);
+  --color-charcoal: var(--color-charcoal);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-heading: var(--font-plus-jakarta);
+  --font-body: var(--font-dm-sans);
+  --font-code: var(--font-jetbrains-mono);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading), system-ui, sans-serif;
+  letter-spacing: -0.8px;
+}
+
+code, pre, kbd {
+  font-family: var(--font-code), monospace;
+}
+
+/* Smooth transitions for interactive elements */
+button, a, input, textarea, select {
+  transition: all 0.15s ease;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }

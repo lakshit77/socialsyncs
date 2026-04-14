@@ -1,0 +1,19 @@
+[project]
+id = "socialsyncs"
+
+[api]
+port = 54321
+schemas = ["public", "storage"]
+
+[db]
+port = 54322
+
+[studio]
+port = 54323
+
+[auth]
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000/callback"]
+
+[auth.email]
+enable_signup = true
