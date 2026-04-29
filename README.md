@@ -11,7 +11,7 @@
 | Feature | Platform | Status |
 |---|---|---|
 | Post images, reels, carousels & stories | Instagram | Live |
-| YouTube comment automation (AI agent) | YouTube | In progress |
+| YouTube comment automation (AI agent) | YouTube | Live |
 | Post to Facebook | Facebook | Coming soon |
 | Post to YouTube | YouTube | Coming soon |
 | Post to LinkedIn | LinkedIn | Coming soon |
@@ -32,7 +32,7 @@ SocialSyncs connects to social platforms using your own API credentials. You pas
 4. A status poller waits until the container is ready
 5. The app auto-publishes the post and saves the result
 
-**YouTube comment automation flow (in progress):**
+**YouTube comment automation flow (live):**
 1. Fetches comments from your YouTube videos via YouTube Data API v3
 2. An AI agent filters comments — ignoring spam, replying only to genuine questions
 3. Pulls the video transcript with timestamps
@@ -95,10 +95,6 @@ APP_BASE_URL=http://localhost:3000
 OPENROUTER_API_KEY=your_openrouter_api_key
 OPENROUTER_CLAUDE_MODEL=anthropic/claude-sonnet-4-6   # or any OpenRouter model
 
-# Required for YouTube OAuth
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-
 # Optional — AES-256-GCM key for encrypting stored OAuth tokens.
 # Auto-derived from SUPABASE_SERVICE_ROLE_KEY if not set.
 # For production, generate with: openssl rand -hex 32
@@ -157,8 +153,9 @@ Your credentials are stored in your own Supabase instance — never shared.
 2. Enable the **YouTube Data API v3**
 3. Create an **OAuth 2.0 Client ID** (Web application)
 4. Add `http://localhost:3000/api/v1/auth/youtube/callback` as an authorized redirect URI
-5. Add your `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` to `.env.local`
-6. Go to **Settings → YouTube** in the app and click **Connect with Google**
+5. Go to **Settings → YouTube** in the app, enter your `Client ID` and `Client Secret`, then click **Connect with Google**
+
+Your OAuth credentials are entered directly in the app — no server-side env vars needed for YouTube.
 
 ---
 
@@ -321,6 +318,8 @@ This project is open source and built in public. Contributions are welcome.
 This project is built episode by episode on YouTube. Each episode covers a new feature from scratch — ideal if you want to understand every decision and how everything connects.
 
 > Subscribe and follow along to build your own fully functional social media automation platform.
+
+[Watch the series → youtube.com/@lakshit-ukani](https://www.youtube.com/@lakshit-ukani)
 
 ---
 
