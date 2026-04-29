@@ -39,3 +39,20 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# keep graph outputs, skip heavy/local-only files
+graphify-out/cache/
+graphify-out/manifest.json
+graphify-out/cost.json
+
+# Claude Code MCP config (contains project-specific Supabase project ref)
+.mcp.json
+
+# Internal planning/context files not meant for public consumption
+plan.md
+temp.md
+LONG_FORM_VIDEO_CONTEXT.md
+ig_posting.json
+
+# Claude local settings
+.claude/settings.local.json   

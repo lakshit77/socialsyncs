@@ -11,11 +11,13 @@ import {
   Clock,
   Settings,
   Images,
+  PlayCircle,
 } from "lucide-react";
 
 const navItems = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { label: "Create Post", href: "/create", icon: PlusCircle },
+  { label: "YouTube", href: "/youtube/videos", icon: PlayCircle },
   { label: "Gallery", href: "/gallery", icon: Images },
   { label: "History", href: "/history", icon: Clock },
   { label: "Settings", href: "/settings", icon: Settings },

@@ -35,6 +35,42 @@ export const platformCredentialsSchema = z.object({
   }),
 });
 
-export type PlatformCredentialsInput = z.infer<
-  typeof platformCredentialsSchema
->;
+export type PlatformCredentialsInput = z.infer<typeof platformCredentialsSchema>;
+
+export const youtubeAutomateSchema = z.object({
+  videoId: z.string().min(1, "videoId is required"),
+});
+
+export type YouTubeAutomateInput = z.infer<typeof youtubeAutomateSchema>;
+
+export const createApiKeySchema = z.object({
+  name: z.string().min(1, "name is required").max(64),
+});
+
+export type CreateApiKeyInput = z.infer<typeof createApiKeySchema>;
+
+// Safely coerces string "true"/"false" to boolean without treating any
+// non-empty string as true (which z.coerce.boolean() does incorrectly).
+const booleanFromAny = z.preprocess((val) => {
+  if (typeof val === "boolean") return val;
+  if (val === "true" || val === "1") return true;
+  if (val === "false" || val === "0") return false;
+  return val;
+}, z.boolean());
+
+export const youtubeSyncSchema = z.object({
+  maxVideos: z.coerce.number().int().min(1).max(50).default(5),
+  fetchTranscript: booleanFromAny.default(true),
+  skipIfNoCaptions: booleanFromAny.default(false),
+});
+
+export type YouTubeSyncInput = z.infer<typeof youtubeSyncSchema>;
+
+export const youtubeAutomateLatestSchema = z.object({
+  maxVideos: z.coerce.number().int().min(1).max(50).default(5),
+  runLimit: z.coerce.number().int().min(1).max(10).default(1),
+  requireTranscript: booleanFromAny.default(false),
+  autoPostOverride: booleanFromAny.optional(),
+});
+
+export type YouTubeAutomateLatestInput = z.infer<typeof youtubeAutomateLatestSchema>;
