@@ -7,6 +7,7 @@ import { OAuthConnectionService } from "@/services/oauth/oauth-connection.servic
 import { YouTubeService } from "@/services/platforms/youtube/youtube.service";
 import { DEFAULT_YOUTUBE_VIDEO_PAGE_SIZE } from "@/services/platforms/youtube/youtube.constants";
 import { VideoGrid } from "@/components/youtube/video-grid";
+import type { YouTubeVideo } from "@/services/platforms/youtube/youtube.types";
 
 /**
  * Server-side initial data fetch + shell for the YouTube videos listing page.
@@ -52,7 +53,7 @@ export default async function YouTubeVideosPage() {
   }
 
   // Server-fetch the first page for instant render (no loading spinner on initial load).
-  let initialVideos = [];
+  let initialVideos: YouTubeVideo[] = [];
   let initialNextPageToken: string | null = null;
 
   try {

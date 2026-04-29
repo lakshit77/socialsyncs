@@ -6,7 +6,7 @@ import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/ca
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { CheckCircle, AlertCircle } from "lucide-react";
+import { CheckCircle, AlertCircle, type LucideIcon } from "lucide-react";
 
 export interface ManualCredentialField {
   /** Object key used to store the value in the credentials JSONB. */
@@ -14,7 +14,7 @@ export interface ManualCredentialField {
   label: string;
   placeholder: string;
   type: "text" | "password";
-  icon: React.ComponentType<{ size?: number; strokeWidth?: number; className?: string }>;
+  icon: LucideIcon;
   helpText: string;
   /** If true, the field must be filled before saving. Defaults to true. */
   required?: boolean;
@@ -30,7 +30,7 @@ export interface ManualPlatformDefinition {
   id: string;
   name: string;
   description: string;
-  icon: React.ComponentType<{ size?: number; strokeWidth?: number; className?: string }>;
+  icon: LucideIcon;
   fields: ManualCredentialField[];
   setupGuide: ManualSetupStep[];
 }
