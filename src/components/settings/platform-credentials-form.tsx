@@ -1,27 +1,77 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { createClient } from "@/lib/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Camera, CheckCircle, AlertCircle, Key, Hash } from "lucide-react";
+import { Camera, PlayCircle, Globe, Briefcase, Hash, Key } from "lucide-react";
+import { OAuthConnectCard, type OAuthPlatformDefinition } from "./oauth-connect-card";
+import { ManualCredentialsCard, type ManualPlatformDefinition } from "./manual-credentials-card";
+import type { OAuthConnection } from "@/services/oauth/types";
 
-interface PlatformCredential {
-  platform: string;
-  credentials: {
-    access_token: string;
-    account_id: string;
-  };
-  is_active: boolean;
-}
+// ---------------------------------------------------------------------------
+// Platform definitions
+// ---------------------------------------------------------------------------
 
-interface PlatformCredentialsFormProps {
-  initialCredentials: PlatformCredential[];
-}
+/**
+ * Platforms that use the full OAuth redirect flow and are currently active.
+ */
+const ACTIVE_OAUTH_PLATFORMS: OAuthPlatformDefinition[] = [
+  {
+    id: "youtube",
+    name: "YouTube",
+    icon: PlayCircle,
+    description: "Automate comment replies using transcript-aware AI",
+    devConsoleUrl: "https://console.cloud.google.com/apis/credentials",
+    setupGuide: [
+      {
+        title: "Create Google Cloud project",
+        detail: "Go to console.cloud.google.com, create a project, and enable YouTube Data API v3.",
+      },
+      {
+        title: "Create OAuth 2.0 credentials",
+        detail:
+          "Under APIs & Services → Credentials, create an OAuth 2.0 Client ID (Web application type).",
+      },
+      {
+        title: "Add redirect URI",
+        detail:
+          "Copy the Authorized Redirect URI shown in the form below and add it to your OAuth client's Authorized redirect URIs.",
+      },
+      {
+        title: "Copy credentials",
+        detail: "Paste your Client ID and Client Secret into the fields above and save.",
+      },
+    ],
+  },
+];
 
-const PLATFORMS = [
+/**
+ * Platforms with OAuth providers registered but not yet fully implemented.
+ * Rendered as disabled "Coming Soon" cards.
+ */
+const COMING_SOON_PLATFORMS: OAuthPlatformDefinition[] = [
+  {
+    id: "facebook",
+    name: "Facebook",
+    icon: Globe,
+    description: "Post to pages and automate engagement",
+    devConsoleUrl: "https://developers.facebook.com/apps",
+    comingSoon: true,
+    setupGuide: [],
+  },
+  {
+    id: "linkedin",
+    name: "LinkedIn",
+    icon: Briefcase,
+    description: "Post to profiles and company pages",
+    devConsoleUrl: "https://www.linkedin.com/developers/apps",
+    comingSoon: true,
+    setupGuide: [],
+  },
+];
+
+/**
+ * Platforms that use manual long-lived token entry.
+ * Instagram stays here until a full OAuth migration is completed.
+ */
+const MANUAL_PLATFORMS: ManualPlatformDefinition[] = [
   {
     id: "instagram",
     name: "Instagram",
@@ -46,225 +96,134 @@ const PLATFORMS = [
           "Requires: instagram_basic, instagram_content_publish, pages_show_list, pages_read_engagement",
       },
     ],
+    setupGuide: [
+      {
+        title: "Create Meta app",
+        detail:
+          "Go to developers.facebook.com, create a Business app, and add Instagram Graph API.",
+      },
+      {
+        title: "Grant permissions",
+        detail:
+          "Use Graph API Explorer to generate a user token with instagram_basic, instagram_content_publish, pages_show_list, and pages_read_engagement scopes.",
+      },
+      {
+        title: "Get long-lived token",
+        detail: "Exchange the short-lived token using Facebook OAuth token exchange endpoint.",
+      },
+      {
+        title: "Fetch Account ID",
+        detail:
+          "Call /me/accounts and then /{page-id}?fields=instagram_business_account to get the numeric account ID.",
+      },
+      {
+        title: "Save credentials",
+        detail: "Paste the Account ID and long-lived access token in this form, then save.",
+      },
+    ],
   },
-  // Future platforms can be added here
 ];
 
+// ---------------------------------------------------------------------------
+// Props
+// ---------------------------------------------------------------------------
+
+export interface PlatformCredential {
+  platform: string;
+  credentials: Record<string, string>;
+  is_active: boolean;
+}
+
+export interface PlatformOAuthConnectionSummary {
+  platform: string;
+  accountTitle: string;
+  status: "active" | "expired" | "disconnected";
+  tokenExpiry: string | null;
+  oauthProvider: "system" | "custom";
+  clientIdUsed: string;
+}
+
+interface PlatformCredentialsFormProps {
+  /** Masked credential rows for manual platforms. */
+  initialCredentials: PlatformCredential[];
+  /** OAuth connection summaries fetched server-side. */
+  oauthConnections: PlatformOAuthConnectionSummary[];
+  /** Custom OAuth app credentials. Secret is never sent to client — only a presence flag. */
+  customOAuthApps: Record<string, { client_id?: string; has_client_secret: boolean }>;
+}
+
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
+
+/**
+ * Renders the connected platforms grid on the Settings page.
+ *
+ * OAuth-based platforms (YouTube, Facebook, LinkedIn) render OAuthConnectCard.
+ * Manual-token platforms (Instagram) render ManualCredentialsCard.
+ *
+ * Adding a new platform:
+ * - OAuth: add an entry to OAUTH_PLATFORMS above.
+ * - Manual: add an entry to MANUAL_PLATFORMS above.
+ */
 export function PlatformCredentialsForm({
   initialCredentials,
+  oauthConnections,
+  customOAuthApps,
 }: PlatformCredentialsFormProps) {
-  const [credentials, setCredentials] = useState<
-    Record<string, Record<string, string>>
-  >(() => {
-    const initial: Record<string, Record<string, string>> = {};
-    for (const cred of initialCredentials) {
-      initial[cred.platform] = {
-        access_token: cred.credentials.access_token,
-        account_id: cred.credentials.account_id,
-      };
-    }
-    return initial;
-  });
-
-  const [saving, setSaving] = useState<Record<string, boolean>>({});
-  const [status, setStatus] = useState<
-    Record<string, { type: "success" | "error"; message: string }>
-  >({});
-
-  /** False until cookie-backed session is read into the client (avoids first-click RLS failures). */
-  const [authReady, setAuthReady] = useState(false);
-
-  const supabase = createClient();
-
-  useEffect(() => {
-    let cancelled = false;
-
-    void (async () => {
-      try {
-        await supabase.auth.getSession();
-        await supabase.auth.getUser();
-      } finally {
-        if (!cancelled) {
-          setAuthReady(true);
-        }
-      }
-    })();
-
-    return () => {
-      cancelled = true;
+  /** Converts a connection summary row into the OAuthConnection shape for the card. */
+  function toOAuthConnection(
+    connectionRow: PlatformOAuthConnectionSummary | undefined
+  ): OAuthConnection | null {
+    if (!connectionRow) return null;
+    return {
+      id: "",
+      userId: "",
+      platform: connectionRow.platform,
+      accountId: "",
+      accountTitle: connectionRow.accountTitle,
+      tokenExpiry: connectionRow.tokenExpiry ? new Date(connectionRow.tokenExpiry) : null,
+      oauthProvider: connectionRow.oauthProvider,
+      clientIdUsed: connectionRow.clientIdUsed,
+      status: connectionRow.status,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
-  }, [supabase]);
-
-  function updateField(platform: string, field: string, value: string) {
-    setCredentials((prev) => ({
-      ...prev,
-      [platform]: { ...prev[platform], [field]: value },
-    }));
-  }
-
-  async function handleSave(platformId: string) {
-    const creds = credentials[platformId];
-    if (!creds?.access_token || !creds?.account_id) {
-      setStatus((prev) => ({
-        ...prev,
-        [platformId]: {
-          type: "error",
-          message: "Both Account ID and Access Token are required",
-        },
-      }));
-      return;
-    }
-
-    setSaving((prev) => ({ ...prev, [platformId]: true }));
-    setStatus((prev) => {
-      const next = { ...prev };
-      delete next[platformId];
-      return next;
-    });
-
-    await supabase.auth.getSession();
-
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-      setSaving((prev) => ({ ...prev, [platformId]: false }));
-      setStatus((prev) => ({
-        ...prev,
-        [platformId]: {
-          type: "error",
-          message:
-            "Your session could not be verified. Refresh the page and sign in again, then retry.",
-        },
-      }));
-      return;
-    }
-
-    const existing = initialCredentials.find(
-      (c) => c.platform === platformId
-    );
-
-    let error;
-    if (existing) {
-      ({ error } = await supabase
-        .from("platform_credentials")
-        .update({
-          credentials: {
-            access_token: creds.access_token,
-            account_id: creds.account_id,
-          },
-        })
-        .eq("platform", platformId)
-        .eq("user_id", user.id));
-    } else {
-      ({ error } = await supabase.from("platform_credentials").insert({
-        user_id: user.id,
-        platform: platformId,
-        credentials: {
-          access_token: creds.access_token,
-          account_id: creds.account_id,
-        },
-      }));
-    }
-
-    setSaving((prev) => ({ ...prev, [platformId]: false }));
-
-    if (error) {
-      setStatus((prev) => ({
-        ...prev,
-        [platformId]: { type: "error", message: error.message },
-      }));
-    } else {
-      setStatus((prev) => ({
-        ...prev,
-        [platformId]: {
-          type: "success",
-          message: "Credentials saved successfully",
-        },
-      }));
-    }
-  }
-
-  function isConnected(platformId: string) {
-    return initialCredentials.some(
-      (c) => c.platform === platformId && c.is_active
-    );
   }
 
   return (
-    <div className="space-y-6">
-      {PLATFORMS.map((platform) => (
-        <Card key={platform.id}>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-surface flex items-center justify-center">
-                  <platform.icon
-                    size={20}
-                    strokeWidth={1.8}
-                    className="text-foreground"
-                  />
-                </div>
-                <div>
-                  <CardTitle>{platform.name}</CardTitle>
-                  <CardDescription>{platform.description}</CardDescription>
-                </div>
-              </div>
-              {isConnected(platform.id) ? (
-                <Badge variant="success">Connected</Badge>
-              ) : (
-                <Badge variant="default">Not connected</Badge>
-              )}
-            </div>
-          </CardHeader>
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+      {/* Active OAuth platforms (YouTube first) */}
+      {ACTIVE_OAUTH_PLATFORMS.map((platform) => (
+        <OAuthConnectCard
+          key={platform.id}
+          platform={platform}
+          connection={toOAuthConnection(oauthConnections.find((c) => c.platform === platform.id))}
+          customCredentials={customOAuthApps[`${platform.id}_oauth_app`] ?? { has_client_secret: false }}
+        />
+      ))}
 
-          <div className="space-y-4">
-            {platform.fields.map((field) => (
-              <div key={field.key}>
-                <Input
-                  id={`${platform.id}-${field.key}`}
-                  label={field.label}
-                  type={field.type}
-                  placeholder={field.placeholder}
-                  icon={field.icon}
-                  value={credentials[platform.id]?.[field.key] ?? ""}
-                  onChange={(e) =>
-                    updateField(platform.id, field.key, e.target.value)
-                  }
-                />
-                <p className="mt-1 text-xs text-text-muted">{field.helpText}</p>
-              </div>
-            ))}
+      {/* Manual-token platforms (Instagram) */}
+      {MANUAL_PLATFORMS.map((platform) => {
+        const existing = initialCredentials.find((c) => c.platform === platform.id);
+        return (
+          <ManualCredentialsCard
+            key={platform.id}
+            platform={platform}
+            initialCredentials={existing?.credentials ?? {}}
+            isConnected={existing?.is_active === true}
+          />
+        );
+      })}
 
-            {status[platform.id] && (
-              <div
-                className={`flex items-center gap-2 text-sm ${
-                  status[platform.id].type === "success"
-                    ? "text-success"
-                    : "text-error"
-                }`}
-              >
-                {status[platform.id].type === "success" ? (
-                  <CheckCircle size={14} strokeWidth={1.8} />
-                ) : (
-                  <AlertCircle size={14} strokeWidth={1.8} />
-                )}
-                {status[platform.id].message}
-              </div>
-            )}
-
-            <Button
-              onClick={() => handleSave(platform.id)}
-              loading={saving[platform.id] || !authReady}
-            >
-              {isConnected(platform.id)
-                ? "Update Credentials"
-                : "Save Credentials"}
-            </Button>
-          </div>
-        </Card>
+      {/* Coming-soon platforms — disabled placeholder cards */}
+      {COMING_SOON_PLATFORMS.map((platform) => (
+        <OAuthConnectCard
+          key={platform.id}
+          platform={platform}
+          connection={null}
+          customCredentials={{}}
+        />
       ))}
     </div>
   );
