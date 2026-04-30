@@ -12,6 +12,11 @@ interface VideoCandidate {
   title: string;
 }
 
+interface InProgressRunRow {
+  video_id: string;
+  automation_started_at: string | null;
+}
+
 type VideoFilter = "all" | "long" | "short";
 
 function matchesVideoFilter(isShort: boolean, filter: VideoFilter): boolean {
@@ -22,10 +27,11 @@ function matchesVideoFilter(isShort: boolean, filter: VideoFilter): boolean {
 /**
  * POST /api/v1/youtube/automate/latest
  *
- * Selects the newest unprocessed video(s) from youtube_videos, runs comment
+ * Selects the newest video(s) from youtube_videos, runs comment
  * automation on each, and returns per-video run results.
  *
- * "Unprocessed" means no completed automation run exists yet for that video.
+ * Videos are intentionally re-runnable so newly arrived comments are picked up.
+ * To avoid duplicate overlap, only videos with an active in-progress run are skipped.
  * Accepts both Supabase session cookies and Bearer API keys (n8n).
  *
  * Request body supports `filter`:
@@ -91,21 +97,26 @@ export async function POST(request: NextRequest) {
         );
     }
 
-    // Find videos that have no completed automation run yet.
+    // Find videos that currently have an in-progress run so we don't start
+    // overlapping runs for the same video in parallel.
     const videoIds = filteredVideos.map((v) => v.id);
+    const runFreshnessCutoffIso = new Date(Date.now() - 30 * 60 * 1000).toISOString();
 
-    const { data: completedRuns } = await supabase
+    const { data: inProgressRuns } = await supabase
       .from("youtube_automation_runs")
-      .select("video_id")
+      .select("video_id, automation_started_at")
       .eq("user_id", userId)
-      .eq("status", "completed")
+      .eq("status", "started")
+      .gte("automation_started_at", runFreshnessCutoffIso)
       .in("video_id", videoIds);
 
-    const completedVideoIds = new Set((completedRuns ?? []).map((r) => r.video_id as string));
+    const inProgressVideoIds = new Set(
+      (inProgressRuns ?? []).map((r) => (r as InProgressRunRow).video_id)
+    );
 
     // Build ordered candidate list (newest-first from listVideos ordering).
     let candidates: VideoCandidate[] = filteredVideos
-      .filter((v) => !completedVideoIds.has(v.id))
+      .filter((v) => !inProgressVideoIds.has(v.id))
       .map((v) => ({ video_id: v.id, title: v.title }));
 
     if (requireTranscript) {
@@ -128,7 +139,7 @@ export async function POST(request: NextRequest) {
 
     if (selected.length === 0) {
       return apiSuccess({
-        message: "No unprocessed videos found matching the criteria.",
+        message: "No eligible videos found matching the criteria.",
         runs: [],
       });
     }
