@@ -62,6 +62,7 @@ export const youtubeSyncSchema = z.object({
   maxVideos: z.coerce.number().int().min(1).max(50).default(5),
   fetchTranscript: booleanFromAny.default(true),
   skipIfNoCaptions: booleanFromAny.default(false),
+  filter: z.enum(["all", "long", "short"]).default("all"),
 });
 
 export type YouTubeSyncInput = z.infer<typeof youtubeSyncSchema>;
@@ -71,6 +72,7 @@ export const youtubeAutomateLatestSchema = z.object({
   runLimit: z.coerce.number().int().min(1).max(10).default(1),
   requireTranscript: booleanFromAny.default(false),
   autoPostOverride: booleanFromAny.optional(),
+  filter: z.enum(["all", "long", "short"]).default("all"),
 });
 
 export type YouTubeAutomateLatestInput = z.infer<typeof youtubeAutomateLatestSchema>;

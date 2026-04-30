@@ -31,6 +31,7 @@ export function VideoGrid({ initialVideos, initialNextPageToken }: VideoGridProp
   const [nextPageToken, setNextPageToken] = useState<string | null>(initialNextPageToken);
   const [activeTab, setActiveTab] = useState<Tab>("all");
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [navigatingVideoId, setNavigatingVideoId] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   function handleLoadMore(): void {
@@ -109,6 +110,12 @@ export function VideoGrid({ initialVideos, initialNextPageToken }: VideoGridProp
       </div>
 
       {/* Video grid */}
+      {navigatingVideoId && (
+        <p className="text-sm text-text-muted">
+          Opening video settings and transcript...
+        </p>
+      )}
+
       {filteredVideos.length === 0 ? (
         <p className="text-sm text-text-muted py-8 text-center">
           {activeTab === "shorts"
@@ -123,7 +130,12 @@ export function VideoGrid({ initialVideos, initialNextPageToken }: VideoGridProp
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-6">
           {filteredVideos.map((video) => (
-            <VideoCard key={video.id} video={video} />
+            <VideoCard
+              key={video.id}
+              video={video}
+              isNavigating={navigatingVideoId === video.id}
+              onNavigateStart={(videoId: string) => setNavigatingVideoId(videoId)}
+            />
           ))}
         </div>
       )}

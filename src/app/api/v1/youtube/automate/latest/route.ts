@@ -12,6 +12,13 @@ interface VideoCandidate {
   title: string;
 }
 
+type VideoFilter = "all" | "long" | "short";
+
+function matchesVideoFilter(isShort: boolean, filter: VideoFilter): boolean {
+  if (filter === "all") return true;
+  return filter === "short" ? isShort : !isShort;
+}
+
 /**
  * POST /api/v1/youtube/automate/latest
  *
@@ -20,6 +27,11 @@ interface VideoCandidate {
  *
  * "Unprocessed" means no completed automation run exists yet for that video.
  * Accepts both Supabase session cookies and Bearer API keys (n8n).
+ *
+ * Request body supports `filter`:
+ * - "all"   => all videos (default)
+ * - "long"  => regular long-form videos only
+ * - "short" => Shorts only
  *
  * n8n example:
  *   POST /api/v1/youtube/automate/latest
@@ -36,7 +48,7 @@ export async function POST(request: NextRequest) {
     return apiError("VALIDATION_ERROR", "Invalid request body", 400, parsed.error.issues);
   }
 
-  const { maxVideos, runLimit, requireTranscript, autoPostOverride } = parsed.data;
+  const { maxVideos, runLimit, requireTranscript, autoPostOverride, filter } = parsed.data;
 
   try {
     // Ensure the user's YouTube connection is active.
@@ -60,10 +72,11 @@ export async function POST(request: NextRequest) {
     });
 
     const page = await youtube.listVideos(maxVideos);
+    const filteredVideos = page.videos.filter((video) => matchesVideoFilter(video.is_short, filter));
     const supabase = createAdminClient();
 
     // Upsert fetched videos so youtube_videos is always up to date.
-    for (const video of page.videos) {
+    for (const video of filteredVideos) {
       await supabase
         .from("youtube_videos")
         .upsert(
@@ -79,7 +92,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Find videos that have no completed automation run yet.
-    const videoIds = page.videos.map((v) => v.id);
+    const videoIds = filteredVideos.map((v) => v.id);
 
     const { data: completedRuns } = await supabase
       .from("youtube_automation_runs")
@@ -91,7 +104,7 @@ export async function POST(request: NextRequest) {
     const completedVideoIds = new Set((completedRuns ?? []).map((r) => r.video_id as string));
 
     // Build ordered candidate list (newest-first from listVideos ordering).
-    let candidates: VideoCandidate[] = page.videos
+    let candidates: VideoCandidate[] = filteredVideos
       .filter((v) => !completedVideoIds.has(v.id))
       .map((v) => ({ video_id: v.id, title: v.title }));
 
