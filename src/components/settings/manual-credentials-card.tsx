@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -62,23 +62,7 @@ export function ManualCredentialsCard({
   const [status, setStatus] = useState<{ type: "success" | "error"; message: string } | null>(
     null
   );
-  const [authReady, setAuthReady] = useState(false);
   const supabase = createClient();
-
-  useEffect(() => {
-    let cancelled = false;
-    void (async () => {
-      try {
-        await supabase.auth.getSession();
-        await supabase.auth.getUser();
-      } finally {
-        if (!cancelled) setAuthReady(true);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [supabase]);
 
   function updateField(key: string, value: string): void {
     setCredentials((prev) => ({ ...prev, [key]: value }));
@@ -96,8 +80,6 @@ export function ManualCredentialsCard({
 
     setSaving(true);
     setStatus(null);
-
-    await supabase.auth.getSession();
     const {
       data: { user },
       error: authError,
@@ -200,7 +182,7 @@ export function ManualCredentialsCard({
           </div>
         )}
 
-        <Button onClick={handleSave} loading={saving || !authReady}>
+        <Button onClick={handleSave} loading={saving}>
           {isConnected ? "Update Credentials" : "Save Credentials"}
         </Button>
       </div>

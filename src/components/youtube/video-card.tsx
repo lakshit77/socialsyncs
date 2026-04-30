@@ -1,8 +1,14 @@
+ "use client";
+
 import Link from "next/link";
+import { Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import type { YouTubeVideo } from "@/services/platforms/youtube/youtube.types";
 
 interface VideoCardProps {
   video: YouTubeVideo;
+  isNavigating?: boolean;
+  onNavigateStart?: (videoId: string) => void;
 }
 
 /**
@@ -22,13 +28,34 @@ function formatDuration(seconds: number): string {
  * Compact YouTube-style video card: 16:9 thumbnail with overlaid duration,
  * title, and view/comment stats below. Links to the video's automation page.
  */
-export function VideoCard({ video }: VideoCardProps) {
+export function VideoCard({ video, isNavigating = false, onNavigateStart }: VideoCardProps) {
   const duration = formatDuration(video.duration_seconds);
 
   return (
     <Link
       href={`/youtube/videos/${video.id}`}
-      className="group flex flex-col gap-2 focus:outline-none"
+      onClick={(event) => {
+        if (isNavigating) {
+          event.preventDefault();
+          return;
+        }
+        // Only show in-app loading state for regular left-click navigation.
+        if (
+          event.button !== 0 ||
+          event.metaKey ||
+          event.ctrlKey ||
+          event.shiftKey ||
+          event.altKey
+        ) {
+          return;
+        }
+        onNavigateStart?.(video.id);
+      }}
+      className={cn(
+        "group flex flex-col gap-2 focus:outline-none",
+        isNavigating && "pointer-events-none opacity-80"
+      )}
+      aria-busy={isNavigating}
     >
       {/* Thumbnail */}
       <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-surface">
@@ -56,6 +83,15 @@ export function VideoCard({ video }: VideoCardProps) {
           <span className="absolute top-1.5 left-1.5 bg-[#ff0000] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none">
             Short
           </span>
+        )}
+
+        {isNavigating && (
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px] flex items-center justify-center">
+            <span className="inline-flex items-center gap-1.5 rounded-md bg-black/70 px-2.5 py-1 text-[11px] font-semibold text-white">
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              Opening...
+            </span>
+          </div>
         )}
       </div>
 

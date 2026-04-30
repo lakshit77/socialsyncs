@@ -13,11 +13,23 @@ interface SyncResult {
   skippedNoTranscript: string[];
 }
 
+type VideoFilter = "all" | "long" | "short";
+
+function matchesVideoFilter(isShort: boolean, filter: VideoFilter): boolean {
+  if (filter === "all") return true;
+  return filter === "short" ? isShort : !isShort;
+}
+
 /**
  * POST /api/v1/youtube/videos/sync
  *
  * Upserts the latest N videos from the user's channel into youtube_videos,
  * optionally fetching transcripts for rows that are missing them.
+ *
+ * Request body supports `filter`:
+ * - "all"   => all videos (default)
+ * - "long"  => regular long-form videos only
+ * - "short" => Shorts only
  * Accepts both Supabase session cookies and Bearer API keys.
  */
 export async function POST(request: NextRequest) {
@@ -30,7 +42,7 @@ export async function POST(request: NextRequest) {
     return apiError("VALIDATION_ERROR", "Invalid request body", 400, parsed.error.issues);
   }
 
-  const { maxVideos, fetchTranscript, skipIfNoCaptions } = parsed.data;
+  const { maxVideos, fetchTranscript, skipIfNoCaptions, filter } = parsed.data;
 
   try {
     const oauthService = new OAuthConnectionService();
@@ -54,6 +66,7 @@ export async function POST(request: NextRequest) {
     });
 
     const page = await youtube.listVideos(maxVideos);
+    const filteredVideos = page.videos.filter((video) => matchesVideoFilter(video.is_short, filter));
     const supabase = createAdminClient();
     const result: SyncResult = {
       inserted: [],
@@ -62,7 +75,7 @@ export async function POST(request: NextRequest) {
       skippedNoTranscript: [],
     };
 
-    for (const video of page.videos) {
+    for (const video of filteredVideos) {
       // Upsert video metadata.
       const { data: existing } = await supabase
         .from("youtube_videos")
@@ -120,7 +133,7 @@ export async function POST(request: NextRequest) {
     }
 
     return apiSuccess({
-      totalVideos: page.videos.length,
+      totalVideos: filteredVideos.length,
       ...result,
     });
   } catch (err) {

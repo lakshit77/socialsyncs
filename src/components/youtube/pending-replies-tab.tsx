@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { CheckCircle, Clock, SkipForward, Send } from "lucide-react";
+import { CheckCircle, Clock, SkipForward, Send, Loader2 } from "lucide-react";
 
 type ReplyStatus = "pending_review" | "approved" | "posted" | "skipped" | "liked_only";
 
@@ -56,6 +56,7 @@ export function PendingRepliesTab({
   const [pendingRows, setPendingRows] = useState<PendingReply[]>(initialReplies);
   const [historyRows, setHistoryRows] = useState<PendingReply[]>(initialHistory);
   const [historyLoaded, setHistoryLoaded] = useState<boolean>(initialHistory.length > 0);
+  const [historyLoading, setHistoryLoading] = useState<boolean>(false);
   const [busyRowId, setBusyRowId] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
 
@@ -89,6 +90,7 @@ export function PendingRepliesTab({
   }
 
   async function fetchHistory(): Promise<void> {
+    setHistoryLoading(true);
     const { data, error } = await supabase
       .from("youtube_comment_replies")
       .select("id, comment_text, author_name, ai_reply, timestamp_reference, status")
@@ -96,6 +98,7 @@ export function PendingRepliesTab({
       .in("status", ["approved", "posted", "skipped", "liked_only"])
       .order("created_at", { ascending: false });
 
+    setHistoryLoading(false);
     if (!error) {
       setHistoryRows((data ?? []) as PendingReply[]);
       setHistoryLoaded(true);
@@ -282,8 +285,16 @@ export function PendingRepliesTab({
       {/* History tab */}
       {activeTab === "history" && (
         <div className="space-y-4">
-          {!historyLoaded ? (
-            <p className="text-sm text-text-muted">Loading history…</p>
+          {historyLoading ? (
+            <div className="flex items-center gap-2 text-sm text-text-muted py-4">
+              <Loader2 size={15} strokeWidth={1.8} className="animate-spin" />
+              Loading history…
+            </div>
+          ) : !historyLoaded ? (
+            <div className="flex items-center gap-2 text-sm text-text-muted py-4">
+              <Loader2 size={15} strokeWidth={1.8} className="animate-spin" />
+              Loading history…
+            </div>
           ) : historyRows.length === 0 ? (
             <p className="text-sm text-text-muted">No history yet for this video.</p>
           ) : (

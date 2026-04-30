@@ -19,6 +19,7 @@ import {
   Unlink,
   Copy,
   Check,
+  Loader2,
 } from "lucide-react";
 import type { OAuthConnection } from "@/services/oauth/types";
 
@@ -82,6 +83,7 @@ export function OAuthConnectCard({
     message: string;
   } | null>(null);
   const [disconnecting, startDisconnectTransition] = useTransition();
+  const [connecting, setConnecting] = useState(false);
   const [copiedRedirectUri, setCopiedRedirectUri] = useState(false);
   const [disconnectError, setDisconnectError] = useState<string | null>(null);
 
@@ -447,12 +449,23 @@ export function OAuthConnectCard({
 
         {/* Primary connect button */}
         {!isConnected && (
-          <a href={`/api/v1/auth/${platform.id}/login`}>
-            <Button className="w-full">
-              <Link size={15} strokeWidth={1.8} className="mr-2" />
-              {isExpired ? `Reconnect ${platform.name}` : `Connect ${platform.name}`}
-            </Button>
-          </a>
+          <Button
+            className="w-full"
+            loading={connecting}
+            onClick={() => {
+              setConnecting(true);
+              // Redirect to OAuth login — the page will navigate away, so no
+              // need to reset the loading state; it naturally clears on return.
+              window.location.href = `/api/v1/auth/${platform.id}/login`;
+            }}
+          >
+            {!connecting && <Link size={15} strokeWidth={1.8} className="mr-2" />}
+            {connecting
+              ? `Redirecting to ${platform.name}…`
+              : isExpired
+              ? `Reconnect ${platform.name}`
+              : `Connect ${platform.name}`}
+          </Button>
         )}
       </div>
     </Card>
